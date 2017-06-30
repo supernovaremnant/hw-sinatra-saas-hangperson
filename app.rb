@@ -29,7 +29,7 @@ class HangpersonApp < Sinatra::Base
     # NOTE: don't change next line - it's needed by autograder!
     word = params[:word] || HangpersonGame.get_random_word
     # NOTE: don't change previous line - it's needed by autograder!
-    
+    puts "Generate a new word #{word}"
     @game = HangpersonGame.new(word)
     redirect '/show'
   end
@@ -39,7 +39,18 @@ class HangpersonApp < Sinatra::Base
   # If a guess is invalid, set flash[:message] to "Invalid guess."
   post '/guess' do
     letter = params[:guess].to_s[0]
+    
     ### YOUR CODE HERE ###
+    begin 
+      if not @game.guess(letter) 
+        flash[:message] = "You have already used that letter."
+      end
+    rescue 
+      puts "#{letter} is a invalid guess"  
+      flash[:message] = "Invalid guess."
+    end
+    ### YOUR CODE HERE ###
+    
     redirect '/show'
   end
   
@@ -49,18 +60,28 @@ class HangpersonApp < Sinatra::Base
   # Notice that the show.erb template expects to use the instance variables
   # wrong_guesses and word_with_guesses from @game.
   get '/show' do
+    
     ### YOUR CODE HERE ###
-    erb :show # You may change/remove this line
+    if @game.check_win_or_lose == :win 
+      redirect '/win'
+    elsif @game.check_win_or_lose == :lose
+      redirect '/lose'
+    else 
+      erb :show # You may change/remove this line
+    end 
+    ### YOUR CODE HERE ###
+    
   end
   
   get '/win' do
     ### YOUR CODE HERE ###
     erb :win # You may change/remove this line
+    ### YOUR CODE HERE ###
   end
   
   get '/lose' do
     ### YOUR CODE HERE ###
     erb :lose # You may change/remove this line
+    ### YOUR CODE HERE ###
   end
-  
 end
