@@ -21,7 +21,7 @@ class HangpersonGame
   
   #main guess method 
   def guess(g)
-    if g.to_s.empty? or g.to_s < 'A' or g.to_s > 'z'
+    if g.to_s.empty? or ( g.to_s =~ /[a-zA-Z]/ ).nil?  
       raise ArgumentError.new("Invalid guess")
     end 
     
@@ -37,7 +37,7 @@ class HangpersonGame
         @guesses = g
         @list_of_correct_char.push g
       else
-        @wrong_guesses = g 
+        @wrong_guesses << g 
         @num_of_fail += 1
       end  
       return true
